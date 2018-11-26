@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace serwer
         private static DB db = new DB();
 
         private Dictionary<string, string> map;
-        private Datagram.Datagram send;
+        private Datagram.Datagram send=new Datagram.Datagram();
 
         public Processing(byte[] b) => map = Datagram.Datagram.analyze(Encoding.ASCII.GetString(b));
 
@@ -21,23 +22,50 @@ namespace serwer
             Console.WriteLine("-----------------");
             Console.WriteLine(map);
 
-            switch (map["ST:"])
-            {
-                case "NewSession":
+            var a= new DB.zzzz();
 
-                    break;
-                case "1":
-                    break;
-                default:
-                    break;
+            if (map.ContainsKey("NS"))
+            {
+                a = db.his.Last();
+                if (a.com == true)
+                {
+                    a = new DB.zzzz();
+                    a.ID = map["ID"];
+                    db.his.Add(a);
+                }
+                else if (a.ID != map["ID"]) throw new Exception("Zła sesja");
+
+                if (map.ContainsKey("OP"))
+                    a.OP = map["OP"];
+                if (map.ContainsKey("ST"))
+                    a.ST = map["ST"];
+                if (map.ContainsKey("LL"))
+                    a.L.Add(int.Parse(map["LL"]));
+                if (map["NS"].Equals("0"))
+                {
+                    a.com = false;
+                    throw new NotImplementedException();
+                }
+
+                db.his[db.his.Count - 1] = a;
             }
+
+            //if (map.ContainsKey("ST"))
+            //    switch (map["ST"])
+            //    {
+            //        case "NewSession":
+            //            newSession();
+            //            break;
+            //        default:
+            //            break;
+            //    }
 
             return null;
         }
 
         private void newSession()
         {
-            var z = db.newSession(); 
+            send.ID = db.newSession(); 
         }
     }
 }

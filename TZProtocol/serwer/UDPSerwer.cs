@@ -52,7 +52,7 @@ namespace serwer
             try
             {
                 while (true)
-                {
+                {   
                     var data = m_server.Receive(ref sender);
                     var processing = new Processing(data);
                     var tmp2 = processing.Run();

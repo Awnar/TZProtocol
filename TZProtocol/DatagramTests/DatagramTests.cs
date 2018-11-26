@@ -16,11 +16,11 @@ namespace Datagram.Tests
         {
             Datagram a = new Datagram();
             a.ID = 1.ToString();
-            a.ST = 3.ToString();
+            //a.ST = 3.ToString();
 
-            a.L = new List<long> {1};
+            //a.L = new List<long> {1};
 
-            a.OP = "dod";
+            //a.OP = "silnia";
 
             var z = a.gen();
 

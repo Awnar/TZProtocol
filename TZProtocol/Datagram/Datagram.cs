@@ -23,11 +23,11 @@ namespace Datagram
          * OP -> operacja
          * LL -> liczba
          *
-         * OI -> ID operacji (odsyla sserwer)
+         * IO -> ID operacji (odsyla sserwer)
          *
          * 
          * 
-         * OP, ST, NS, ID, ZC, LL, ...
+         * OP, ST, NS, ID, ZC, LL, IO, ...
          * 
         */
         private static string separator = "\n";
@@ -42,13 +42,12 @@ namespace Datagram
 
                 if (_ST != null) bs = "ST: " + _ST + separator + bs;
                 if (_OP != null) bs = "OP: " + _OP + separator + bs;
+                if (_OP_ID != null) bs += separator + "OI: " + _OP_ID;
 
                 foreach (var item in L)
                 {
                     bs += separator + "LL: " + item;
                 }
-
-                if (_OP_ID != null) bs += separator + "OI: " + _OP_ID;
                 return new[] {bs};
             }
 
@@ -61,13 +60,12 @@ namespace Datagram
             if (_ST != null)
                 tmp[i++] = "ST: " + _ST + separator + "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " +
                            DateTime.Now.Ticks;
+            if (_OP_ID != null)
+                tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
+                           separator + "IO: " + _OP_ID;
             foreach (var item in L)
                 tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
                            separator + "LL: " + item;
-            if (_OP_ID != null)
-                tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
-                           separator + "OI: " + _OP_ID;
-
             return tmp;
         }
 
@@ -79,13 +77,12 @@ namespace Datagram
             {
                 var o = item.IndexOf(" ");
                 var ss = item.Substring(0, o).Trim();
+                ss = ss.Trim(':');
                 var i = item.Substring(o).Trim();
                 map.Add(ss,i);
             }
             return map;
         }
-
-        public string NS => _NS;
 
         public string OP
         {

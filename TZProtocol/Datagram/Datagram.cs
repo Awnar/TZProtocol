@@ -9,8 +9,8 @@ namespace Datagram
 {
     public class Datagram
     {
-        public string ID, ST;
-        private string _NS,_OP, _OP_ID;
+        public string ID;
+        private string _NS,_OP, _OP_ID, _ST;
         public List<long> L = new List<long>();
         private int k;
 
@@ -24,47 +24,62 @@ namespace Datagram
          * LL -> liczba
          *
          * OI -> ID operacji (odsyla sserwer)
+         *
+         * 
+         * 
+         * OP, ST, NS, ID, ZC, LL, ...
          * 
         */
         private static string separator = "\n";
 
         public string[] gen()
         {
-            string bs = "CZ: " + DateTime.Now.Ticks + separator + "ID: " + ID + separator + "ST: " + ST;
-
             k += L.Count;
 
             if (k <= 2)
             {
+                string bs = "ZC: " + DateTime.Now.Ticks + separator + "ID: " + ID;
+
+                if (_ST != null) bs = "ST: " + _ST + separator + bs;
+                if (_OP != null) bs = "OP: " + _OP + separator + bs;
+
                 foreach (var item in L)
                 {
                     bs += separator + "LL: " + item;
                 }
-                if (_OP != null) bs += separator + "OP: " + _OP;
+
                 if (_OP_ID != null) bs += separator + "OI: " + _OP_ID;
                 return new[] {bs};
             }
 
             var tmp = new string[k];
             int i = 0;
-            
+
+            if (_OP != null)
+                tmp[i++] = "OP: " + _OP + separator + "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " +
+                           DateTime.Now.Ticks;
+            if (_ST != null)
+                tmp[i++] = "ST: " + _ST + separator + "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " +
+                           DateTime.Now.Ticks;
             foreach (var item in L)
-                tmp[i++] = bs + separator + "NS: " + --k + separator + "LL: " + item;
-            if (_OP != null) tmp[i++] = bs + separator + "NS: " + --k + separator + "OP: " + _OP;
-            if (_OP_ID != null) tmp[i++] = bs + separator + "NS: " + --k + separator + "OI: " + _OP_ID;
+                tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
+                           separator + "LL: " + item;
+            if (_OP_ID != null)
+                tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
+                           separator + "OI: " + _OP_ID;
 
             return tmp;
         }
 
-        public Dictionary<string, string> analyze(string s)
+        public static Dictionary<string, string> analyze(string s)
         {
             var tmp = s.Split(separator.ToCharArray());
             var map = new Dictionary<string, string>();
             foreach (var item in tmp)
             {
                 var o = item.IndexOf(" ");
-                var ss = item.Substring(0, o-1);
-                var i = item.Substring(o+1);
+                var ss = item.Substring(0, o).Trim();
+                var i = item.Substring(o).Trim();
                 map.Add(ss,i);
             }
             return map;
@@ -81,6 +96,17 @@ namespace Datagram
                 k++;
             }
         }
+
+        public string ST
+        {
+            get => _ST;
+            set
+            {
+                _ST = value;
+                k++;
+            }
+        }
+
         public string OP_ID
         {
             get => OP_ID;

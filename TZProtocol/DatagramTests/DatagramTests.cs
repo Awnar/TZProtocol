@@ -18,7 +18,7 @@ namespace Datagram.Tests
             a.ID = 1.ToString();
             a.ST = 3.ToString();
 
-            a.L = new List<long> { 1};
+            a.L = new List<long> {1};
 
             a.OP = "dod";
 
@@ -27,9 +27,14 @@ namespace Datagram.Tests
             foreach (var item in z)
                 Console.WriteLine(item + "\n-----------");
 
-
-            Datagram b = new Datagram();
-            b.analyze(z[0]);
+            foreach (var s in z)
+            {
+                foreach (var item in Datagram.analyze(s))
+                {
+                    Console.WriteLine(item.Key + " => " + item.Value);
+                }
+                Console.WriteLine("-----------");
+            }
 
         }
 

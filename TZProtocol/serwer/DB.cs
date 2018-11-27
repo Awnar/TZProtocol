@@ -13,7 +13,9 @@ namespace serwer
             public string OP;
             public string ID;
             public string ST;
+            public int IO;
             public bool com;
+            public bool OF;
         }
 
         private List<string> ID = new List<string>();

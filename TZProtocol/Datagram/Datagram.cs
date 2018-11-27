@@ -10,9 +10,9 @@ namespace Datagram
     public class Datagram
     {
         public string ID;
-        private string _NS,_OP, _OP_ID, _ST;
-        public List<long> L = new List<long>();
-        private int k;
+        private string _NS,_OP="default", _OP_ID, _ST;
+        public List<int> L = new List<int>();
+        private int k = 2;
 
         /* CZ > znacznik czasu
          * ID -> generowane pseudolosowo z adresu nadawcy
@@ -36,20 +36,20 @@ namespace Datagram
         {
             k += L.Count;
 
-            if (k <= 2)
-            {
-                string bs = "ZC: " + DateTime.Now.Ticks + separator + "ID: " + ID;
+            //if (k <= 2)
+            //{
+            //    string bs = "ZC: " + DateTime.Now.Ticks + separator + "ID: " + ID;
 
-                if (_ST != null) bs = "ST: " + _ST + separator + bs;
-                if (_OP != null) bs = "OP: " + _OP + separator + bs;
-                if (_OP_ID != null) bs += separator + "OI: " + _OP_ID;
+            //    if (_ST != null) bs = "ST: " + _ST + separator + bs;
+            //    if (_OP != null) bs = "OP: " + _OP + separator + bs;
+            //    if (_OP_ID != null) bs += separator + "OI: " + _OP_ID;
 
-                foreach (var item in L)
-                {
-                    bs += separator + "LL: " + item;
-                }
-                return new[] {bs};
-            }
+            //    foreach (var item in L)
+            //    {
+            //        bs += separator + "LL: " + item;
+            //    }
+            //    return new[] {bs};
+            //}
 
             var tmp = new string[k];
             int i = 0;
@@ -76,9 +76,9 @@ namespace Datagram
             foreach (var item in tmp)
             {
                 var o = item.IndexOf(" ");
-                var ss = item.Substring(0, o).Trim();
+                var ss = item.Substring(0, o).Trim().ToUpper();
                 ss = ss.Trim(':');
-                var i = item.Substring(o).Trim();
+                var i = item.Substring(o).Trim().ToLower();
                 map.Add(ss,i);
             }
             return map;
@@ -87,30 +87,22 @@ namespace Datagram
         public string OP
         {
             get => _OP;
-            set
-            {
-                _OP = value;
-                k++;
-            }
+            set => _OP = value;
         }
 
         public string ST
         {
             get => _ST;
-            set
-            {
-                _ST = value;
-                k++;
-            }
+            set => _ST = value;
         }
 
         public string OP_ID
         {
-            get => OP_ID;
+            get => _OP_ID;
             set
             {
-                OP_ID = value;
-                k++;
+                _OP_ID = value;
+                ++k;
             }
         }
     }

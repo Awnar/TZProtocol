@@ -45,7 +45,7 @@ namespace Datagram.Tests
             a.ID = 1.ToString();
             a.ST = 3.ToString();
 
-            a.L = new List<int>{1,2,3,4,5,6};
+            a.LL = new List<int>{1,2,3,4,5,6};
 
             a.OP = "dod";
 

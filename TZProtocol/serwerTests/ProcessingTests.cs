@@ -35,7 +35,7 @@ namespace serwer.Tests
             a.ID = w["ID"];
             a.ST = "operacja";
             a.OP = "dzielenie";
-            a.L = new List<int>() {4, 2};
+            a.LL = new List<int>() {4, 2};
 
             z = a.gen();
 
@@ -73,7 +73,7 @@ namespace serwer.Tests
             a.ID = w["ID"];
             a.ST = "operacja";
             a.OP = "dzielenie";
-            a.L = new List<int>() {4, 2};
+            a.LL = new List<int>() {4, 2};
 
             z = a.gen();
 

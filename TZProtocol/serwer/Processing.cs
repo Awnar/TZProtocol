@@ -86,7 +86,7 @@ namespace serwer
                     endSession();
                     break;
                 default:
-                    send.ST = "STblad";
+                    send.ST = "stblad";
                     s = true;
                     break;
             }
@@ -104,7 +104,6 @@ namespace serwer
 
                 tmp.Add("IO: "+i);
                 tmp.Add("OP: "+item.OP);
-                tmp.Add("ST: operacja");
                 tmp.Add("LL: " + item.L[0]);
                 if (!item.OP.Equals("silnia"))
                     tmp.Add("LL: " + item.L[1]);
@@ -133,7 +132,6 @@ namespace serwer
                 if (io.OP.Equals("silnia"))
                 {
                     tmp.Add("OP: silnia");
-                    tmp.Add("ST: operacja");
                     tmp.Add("LL: " + io.L[0]);
                     if (a.OF)
                         tmp.Add("ST: pelny");
@@ -147,7 +145,6 @@ namespace serwer
                 else
                 {
                     tmp.Add("OP: "+io.OP);
-                    tmp.Add("ST: operacja");
                     tmp.Add("LL: " + io.L[0]);
                     tmp.Add("LL: " + io.L[1]);
                     if (a.OF)
@@ -175,23 +172,23 @@ namespace serwer
                     switch (a.OP)
                     {
                         case "dodawanie":
-                            w = send.L = new List<int>() {a.L.Sum(item => item)};
+                            w = send.LL = new List<int>() {a.L.Sum(item => item)};
                             break;
                         case "odejmowanie":
-                            w = send.L = new List<int>() {a.L[0] - a.L[1]};
+                            w = send.LL = new List<int>() {a.L[0] - a.L[1]};
                             break;
                         case "mnożenie":
-                            w = send.L = new List<int>() {a.L[0] * a.L[1]};
+                            w = send.LL = new List<int>() {a.L[0] * a.L[1]};
                             break;
                         case "dzielenie":
-                            w = send.L = new List<int>() {a.L[0] / a.L[1]};
+                            w = send.LL = new List<int>() {a.L[0] / a.L[1]};
                             break;
                         case "silnia":
-                            w = send.L = new List<int>() {silnia(a.L[0])};
+                            w = send.LL = new List<int>() {silnia(a.L[0])};
                             break;
                         default:
                             send.ID = a.ID;
-                            send.ST = "HWDP";
+                            send.ST = "opblad";
                             break;
                     }
                 }
@@ -204,7 +201,7 @@ namespace serwer
             }
             finally
             {
-                send.OP_ID = db.his.Count.ToString();
+                send.IO = db.his.Count.ToString();
                 db.his.Add(a);
                 s = true;
             }
@@ -222,13 +219,13 @@ namespace serwer
         private void endSession()
         {
             LID = "";
-            send.ST = "OK";
+            send.ST = "koniec";
             s = true;
         }
         private void newSession()
         {
             LID = send.ID = db.newSession();
-            send.ST = "OK";
+            send.ST = "ok";
             s = true;
         }
     }

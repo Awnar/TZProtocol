@@ -68,7 +68,7 @@ namespace serwer
                 Console.WriteLine("BŁĄD... ponawianie nasłuchiwania");
                 var d = new Datagram.Datagram();
                 d.ST = 10.ToString();
-                d.L = new List<int>(){1};
+                d.LL = new List<int>(){1};
                 var da = d.gen();
                 foreach (var item in da)
                 {

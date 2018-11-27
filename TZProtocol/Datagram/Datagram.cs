@@ -10,8 +10,8 @@ namespace Datagram
     public class Datagram
     {
         public string ID;
-        private string _OP="default", _OP_ID, _ST;
-        public List<int> L = new List<int>();
+        private string _OP="default", _IO, _ST;
+        public List<int> LL = new List<int>();
         public string[] inne;
         private int k = 2;
 
@@ -35,7 +35,7 @@ namespace Datagram
 
         public string[] gen()
         {
-            k += L.Count;
+            k += LL.Count;
             if (inne != null)
                 k += inne.Length;
 
@@ -63,10 +63,10 @@ namespace Datagram
             if (_ST != null)
                 tmp[i++] = "ST: " + _ST + separator + "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " +
                            DateTime.Now.Ticks;
-            if (_OP_ID != null)
+            if (_IO != null)
                 tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
-                           separator + "IO: " + _OP_ID;
-            foreach (var item in L)
+                           separator + "IO: " + _IO;
+            foreach (var item in LL)
                 tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
                            separator + "LL: " + item;
             if (inne != null)
@@ -103,12 +103,12 @@ namespace Datagram
             set => _ST = value;
         }
 
-        public string OP_ID
+        public string IO
         {
-            get => _OP_ID;
+            get => _IO;
             set
             {
-                _OP_ID = value;
+                _IO = value;
                 ++k;
             }
         }

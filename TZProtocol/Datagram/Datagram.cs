@@ -10,8 +10,9 @@ namespace Datagram
     public class Datagram
     {
         public string ID;
-        private string _NS,_OP="default", _OP_ID, _ST;
+        private string _OP="default", _OP_ID, _ST;
         public List<int> L = new List<int>();
+        public string[] inne;
         private int k = 2;
 
         /* CZ > znacznik czasu
@@ -35,6 +36,8 @@ namespace Datagram
         public string[] gen()
         {
             k += L.Count;
+            if (inne != null)
+                k += inne.Length;
 
             //if (k <= 2)
             //{
@@ -66,6 +69,10 @@ namespace Datagram
             foreach (var item in L)
                 tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
                            separator + "LL: " + item;
+            if (inne != null)
+                foreach (var item in inne)
+                    tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
+                               separator + item;
             return tmp;
         }
 

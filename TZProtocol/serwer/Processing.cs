@@ -32,32 +32,13 @@ namespace serwer
             {
                 send.ID = map["ID"];
                 send.ST = "zajety";
+                return send.gen();
             }
             send.ID = LID;
+            a.ID = LID;
 
             if (map.ContainsKey("NS"))
             {
-
-                //if (db.his.Count <= 0)
-                //{
-                //    a.ID = map["ID"];
-                //    a.L = new List<int>();
-                //    db.his.Add(a);
-                //}
-                //else
-                //{
-                //    b = db.his.Count() - 1;
-                //    a = db.his[b];
-                //    if (a.com == true)
-                //    {
-                //        a = new DB.zzzz();
-                //        a.ID = map["ID"];
-                //        a.L = new List<int>();
-                //        db.his.Add(a);
-                //        b++;
-                //    }
-                //    else if (a.ID != map["ID"]) throw new Exception("Zła sesja");
-                //}
 
                 if (map.ContainsKey("OP"))
                     a.OP = map["OP"];
@@ -78,14 +59,11 @@ namespace serwer
             {
                 var q = send.gen();
                 foreach (var s in q)
-                {
                     Console.WriteLine("Serwer ...\n" + s + "\n-----------");
-                }
 
                 return q;
             }
-
-            return null; //send.gen();
+            return null;
         }
 
         private void _st()
@@ -104,24 +82,86 @@ namespace serwer
                 case "io":
                     _io();
                     break;
+                case "koniec":
+                    endSession();
+                    break;
                 default:
+                    send.ST = "STblad";
+                    s = true;
                     break;
             }
         }
 
         private void _id()
         {
+            s = true;
+            List<string> tmp = new List<string>();
+            send.ST = "idzwrot";
+            for (int i = 0; i < db.his.Count; i++)
+            {
+                var item = db.his[i];
+                if (item.ID != LID) continue;
 
+                tmp.Add("IO: "+i);
+                tmp.Add("OP: "+item.OP);
+                tmp.Add("ST: operacja");
+                tmp.Add("LL: " + item.L[0]);
+                if (!item.OP.Equals("silnia"))
+                    tmp.Add("LL: " + item.L[1]);
+                if (item.OF)tmp.Add("ST: pelny");
+                    else
+                {
+                    tmp.Add("ST: wynik");
+                    tmp.Add("LL: "+item.L.Last());
+                }
+            }
+            send.inne = tmp.ToArray();
         }
         private void _io()
         {
-            var tmp = db.his[a.IO];
-            if (tmp.ID == LID)
+            s = true;
+            if (db.his.Count < a.IO)
             {
-                
+                send.ST = "ioblad";
+                return;
+            }
+            var io = db.his[a.IO];
+            if (io.ID == LID)
+            {
+                send.ST = "iozwrot";
+                List<string> tmp=new List<string>();
+                if (io.OP.Equals("silnia"))
+                {
+                    tmp.Add("OP: silnia");
+                    tmp.Add("ST: operacja");
+                    tmp.Add("LL: " + io.L[0]);
+                    if (a.OF)
+                        tmp.Add("ST: pelny");
+                    else
+                    {
+                        tmp.Add("ST: wynik");
+                        tmp.Add("LL: " + io.L[1]);
+                    }
+
+                }
+                else
+                {
+                    tmp.Add("OP: "+io.OP);
+                    tmp.Add("ST: operacja");
+                    tmp.Add("LL: " + io.L[0]);
+                    tmp.Add("LL: " + io.L[1]);
+                    if (a.OF)
+                        tmp.Add("ST: pelny");
+                    else
+                    {
+                        tmp.Add("ST: wynik");
+                        tmp.Add("LL: " + io.L[2]);
+                    }
+                }
+                send.inne = tmp.ToArray();
             }
             else
-                send.ST = "blad";
+                send.ST = "nietwoje";
         }
 
         private void licz()
@@ -178,6 +218,13 @@ namespace serwer
                 return i * silnia(i - 1);
         }
 
+
+        private void endSession()
+        {
+            LID = "";
+            send.ST = "OK";
+            s = true;
+        }
         private void newSession()
         {
             LID = send.ID = db.newSession();

@@ -44,20 +44,20 @@ namespace Datagram
 
             if (_OP != null)
                 tmp[i++] = "OP: " + _OP + separator + "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " +
-                           DateTime.Now.Ticks;
+                           DateTime.Now.Ticks + separator;
             if (_ST != null)
                 tmp[i++] = "ST: " + _ST + separator + "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " +
-                           DateTime.Now.Ticks;
+                           DateTime.Now.Ticks + separator;
             if (_IO != null)
                 tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
-                           separator + "IO: " + _IO;
+                           separator + "IO: " + _IO + separator;
             foreach (var item in LL)
                 tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
-                           separator + "LL: " + item;
+                           separator + "LL: " + item + separator;
             if (inne != null)
                 foreach (var item in inne)
                     tmp[i++] = "NS: " + --k + separator + "ID: " + ID + separator + "ZC: " + DateTime.Now.Ticks +
-                               separator + item;
+                               separator + item + separator;
             return tmp;
         }
 

@@ -240,7 +240,7 @@ namespace klient
                 catch (Exception)
                 {
                     Console.WriteLine("Serwer nie odsyła odpowiedzi, próba: " + (i + 1));
-                    if (i++ < 3)
+                    if (i++ < 4)
                     {
                         return ReceiveLoop(i);
                     }
@@ -256,7 +256,7 @@ namespace klient
 
         private static string Receive()
         {
-            var timeToWait = TimeSpan.FromSeconds(3);
+            var timeToWait = TimeSpan.FromSeconds(4);
 
             var asyncResult = serwer.BeginReceive(null, null);
             asyncResult.AsyncWaitHandle.WaitOne(timeToWait);
@@ -287,10 +287,10 @@ namespace klient
                     Environment.Exit(1);
                     break;
                 case "wynik":
-                    Console.WriteLine("Obliczenie " + data[2]["IO"] + ": " + data[3]["LL"] + "");
+                    Console.WriteLine("Obliczenie nr " + data[2]["IO"] + ": " + data[3]["LL"] + "");
                     break;
                 case "pelny":
-                    Console.WriteLine("Obliczenie " + data[2]["IO"] + ": " + "wartość wyniku poza zakresem zmiennej");
+                    Console.WriteLine("Obliczenie nr " + data[2]["IO"] + ": " + "wartość wyniku poza zakresem zmiennej");
                     break;
                 case "idzwrot":
                     int loop = Convert.ToInt32(data[1]["NS"]);

@@ -122,11 +122,12 @@ namespace serwer
         private void _io()
         {
             s = true;
-            if (db.his.Count < a.IO)
+            if ((db.his.Count-1 < a.IO) || (a.IO < 0))
             {
                 send.ST = "niema";
                 return;
             }
+
             var io = db.his[a.IO];
             if (io.ID == LID)
             {

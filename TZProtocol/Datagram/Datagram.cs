@@ -39,21 +39,6 @@ namespace Datagram
             if (inne != null)
                 k += inne.Length;
 
-            //if (k <= 2)
-            //{
-            //    string bs = "ZC: " + DateTime.Now.Ticks + separator + "ID: " + ID;
-
-            //    if (_ST != null) bs = "ST: " + _ST + separator + bs;
-            //    if (_OP != null) bs = "OP: " + _OP + separator + bs;
-            //    if (_OP_ID != null) bs += separator + "OI: " + _OP_ID;
-
-            //    foreach (var item in L)
-            //    {
-            //        bs += separator + "LL: " + item;
-            //    }
-            //    return new[] {bs};
-            //}
-
             var tmp = new string[k];
             int i = 0;
 

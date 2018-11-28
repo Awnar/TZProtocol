@@ -23,6 +23,7 @@ namespace serwer
         public string[] Run()
         {
             if (a.L == null) a.L = new List<int>();
+            if (db.his.Count==0)db.his.Add(new DB.zzzz());
 
             foreach (var item in map)
                 Console.WriteLine(item.Key + " => " + item.Value);
@@ -122,7 +123,7 @@ namespace serwer
         private void _io()
         {
             s = true;
-            if ((db.his.Count-1 < a.IO) || (a.IO < 0))
+            if ((db.his.Count-1 < a.IO) || (a.IO < 1))
             {
                 send.ST = "niema";
                 return;
@@ -137,7 +138,7 @@ namespace serwer
                 {
                     tmp.Add("OP: silnia");
                     tmp.Add("LL: " + io.L[0]);
-                    if (a.OF)
+                    if (io.OF)
                         tmp.Add("ST: pelny");
                     else
                     {
@@ -151,7 +152,7 @@ namespace serwer
                     tmp.Add("OP: "+io.OP);
                     tmp.Add("LL: " + io.L[0]);
                     tmp.Add("LL: " + io.L[1]);
-                    if (a.OF)
+                    if (io.OF)
                         tmp.Add("ST: pelny");
                     else
                     {

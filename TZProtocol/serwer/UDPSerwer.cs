@@ -52,15 +52,16 @@ namespace serwer
             try
             {
                 while (true)
-                {   
+                {
                     var data = m_server.Receive(ref sender);
                     var processing = new Processing(data);
                     var tmp2 = processing.Run();
-                    foreach (var item in tmp2)
-                    {
-                        var tmp = Encoding.ASCII.GetBytes(item);
-                        m_server.Send(tmp, tmp.Length, sender);
-                    }
+                    if (tmp2 != null)
+                        foreach (var item in tmp2)
+                        {
+                            var tmp = Encoding.ASCII.GetBytes(item);
+                            m_server.Send(tmp, tmp.Length, sender);
+                        }
                 }
             }
             catch (Exception)
@@ -68,13 +69,14 @@ namespace serwer
                 Console.WriteLine("BŁĄD... ponawianie nasłuchiwania");
                 var d = new Datagram.Datagram();
                 d.ST = 10.ToString();
-                d.LL = new List<int>(){1};
+                d.LL = new List<int>() {1};
                 var da = d.gen();
                 foreach (var item in da)
                 {
                     var tmp = Encoding.ASCII.GetBytes(item);
                     m_server.Send(tmp, tmp.Length, sender);
                 }
+
                 loop();
             }
         }

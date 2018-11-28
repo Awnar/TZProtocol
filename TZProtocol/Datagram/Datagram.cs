@@ -15,7 +15,7 @@ namespace Datagram
         public string[] inne;
         private int k = 2;
 
-        /* CZ > znacznik czasu
+        /* ZC -> znacznik czasu
          * ID -> generowane pseudolosowo z adresu nadawcy
          * ST -> staus
          *

@@ -288,7 +288,7 @@ namespace klient
                 case "wynik":
                     Console.WriteLine("Obliczenie " + data[2]["IO"] + ": " + data[3]["LL"] + "\n");
                     break;
-                case "overflow":
+                case "pelny":
                     Console.WriteLine("Obliczenie " + data[2]["IO"] + ": " + "wartość wyniku poza zakresem zmiennej\n");
                     break;
                 case "idzwrot":
@@ -308,11 +308,11 @@ namespace klient
                             switch (data[5 + offset]["ST"])
                             {
                                 case "wynik":
-                                    Console.WriteLine(data[6 + offset]["LL"] + "\n");
+                                    Console.WriteLine(data[6 + offset]["LL"]);
                                     counter += 2;
                                     break;
                                 case "pelny":
-                                    Console.WriteLine("przepełnienie\n");
+                                    Console.WriteLine("przepełnienie");
                                     counter++;
                                     break;
                             }
@@ -340,11 +340,11 @@ namespace klient
                             switch (data[6 + offset]["ST"])
                             {
                                 case "wynik":
-                                    Console.WriteLine(data[7 + offset]["LL"] + "\n");
+                                    Console.WriteLine(data[7 + offset]["LL"]);
                                     counter += 2;
                                     break;
                                 case "pelny":
-                                    Console.WriteLine("przepełnienie\n");
+                                    Console.WriteLine("przepełnienie");
                                     counter++;
                                     break;
                             }
@@ -362,10 +362,10 @@ namespace klient
                         switch (data[4]["ST"])
                         {
                             case "wynik":
-                                Console.WriteLine(data[5]["LL"] + "\n");
+                                Console.WriteLine(data[5]["LL"]);
                                 break;
                             case "pelny":
-                                Console.WriteLine("przepełnienie\n");
+                                Console.WriteLine("przepełnienie");
                                 break;
                         }
                     }
@@ -389,10 +389,10 @@ namespace klient
                         switch (data[5]["ST"])
                         {
                             case "wynik":
-                                Console.WriteLine(data[6]["LL"] + "\n");
+                                Console.WriteLine(data[6]["LL"]);
                                 break;
                             case "pelny":
-                                Console.WriteLine("przepełnienie\n");
+                                Console.WriteLine("przepełnienie");
                                 break;
                         }
                     }
@@ -414,6 +414,11 @@ namespace klient
                     break;
                 case "ioblad":
                     Console.WriteLine("Błąd IO");
+                    break;
+                case "koniec":
+                    Console.WriteLine("Koniec sesji\nNaciśnij dowolny klawisz by zakończyć pracę");
+                    Console.ReadKey();
+                    Environment.Exit(1);
                     break;
                 default:
                     Console.WriteLine("Nie rozpoznano statusu serwera");

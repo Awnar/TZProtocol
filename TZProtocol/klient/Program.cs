@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Runtime.Remoting.Channels;
 using System.Text;
@@ -286,10 +287,10 @@ namespace klient
                     Environment.Exit(1);
                     break;
                 case "wynik":
-                    Console.WriteLine("Obliczenie " + data[2]["IO"] + ": " + data[3]["LL"] + "\n");
+                    Console.WriteLine("Obliczenie " + data[2]["IO"] + ": " + data[3]["LL"] + "");
                     break;
                 case "pelny":
-                    Console.WriteLine("Obliczenie " + data[2]["IO"] + ": " + "wartość wyniku poza zakresem zmiennej\n");
+                    Console.WriteLine("Obliczenie " + data[2]["IO"] + ": " + "wartość wyniku poza zakresem zmiennej");
                     break;
                 case "idzwrot":
                     int loop = Convert.ToInt32(data[1]["NS"]);
@@ -398,19 +399,19 @@ namespace klient
                     }
                     break;
                 case "nietwoje":
-                    Console.WriteLine("Historia należy do innego klienta - brak dostępu\n");
+                    Console.WriteLine("Historia należy do innego klienta - brak dostępu");
                     break;
                 case "niema":
-                    Console.WriteLine("Nie ma takiego IO w historii obliczeń\n");
+                    Console.WriteLine("Nie ma takiego IO w historii obliczeń");
                     break;
                 case "opblad":
-                    Console.WriteLine("Błąd OP\n");
+                    Console.WriteLine("Błąd OP");
                     break;
                 case "stblad":
-                    Console.WriteLine("Błąd ST\n");
+                    Console.WriteLine("Błąd ST");
                     break;
                 case "idblad":
-                    Console.WriteLine("Błąd ID\n");
+                    Console.WriteLine("Błąd ID");
                     break;
                 case "ioblad":
                     Console.WriteLine("Błąd IO");
@@ -419,6 +420,9 @@ namespace klient
                     Console.WriteLine("Koniec sesji\nNaciśnij dowolny klawisz by zakończyć pracę");
                     Console.ReadKey();
                     Environment.Exit(1);
+                    break;
+                case "blad":
+                    Console.WriteLine("Błąd domyślny serwera");
                     break;
                 default:
                     Console.WriteLine("Nie rozpoznano statusu serwera");
@@ -438,6 +442,45 @@ namespace klient
 
         private static void edit()
         {
+            Console.WriteLine("\nIle komunikatów chcesz wysłać?");
+            uint choice = 0;
+            while (true)
+            {
+                try
+                {
+                    choice = UInt32.Parse(Console.ReadLine());
+                    break;
+                }
+                catch
+                {
+                    Console.WriteLine("Błąd odczytu. Spróbuj ponownie");
+                }
+            }
+
+            string[] data = new string[choice];
+            int i = 1;
+            while (i <= choice)
+            {
+                Console.WriteLine("\nKomunikat nr " + i + ":");
+                Console.WriteLine("Podaj pierwszą linijkę/pole:");
+                var line1 = Console.ReadLine();
+                Console.WriteLine("Podaj drugą linijkę/pole:");
+                var line2 = Console.ReadLine();
+                Console.WriteLine("Podaj trzecią linijkę/pole:");
+                var line3 = Console.ReadLine();
+                Console.WriteLine("Podaj czwartą linijkę/pole:");
+                var line4 = Console.ReadLine();
+                data[i - 1] = line1 + "\n" + line2 + "\n" + line3 + "\n" + line4;
+                i++;
+            }
+
+            Console.WriteLine("Wysyłam komunikaty...");
+
+            foreach (var item in data)
+            {
+                var tmp = Encoding.ASCII.GetBytes(item);
+                serwer.Send(tmp, tmp.Length);
+            }
 
         }
     }

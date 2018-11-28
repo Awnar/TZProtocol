@@ -67,6 +67,7 @@ namespace Datagram
             var map = new Dictionary<string, string>();
             foreach (var item in tmp)
             {
+                if(item=="")continue;
                 var o = item.IndexOf(" ");
                 var ss = item.Substring(0, o).Trim().ToUpper();
                 ss = ss.Trim(':');

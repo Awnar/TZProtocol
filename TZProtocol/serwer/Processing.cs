@@ -20,6 +20,10 @@ namespace serwer
 
         public Processing(byte[] b) => map = Datagram.Datagram.analyze(Encoding.ASCII.GetString(b));
 
+        ///<summary>
+        ///Analizuje odebrane pakiety i przygotowuje odpowiedz
+        ///</summary>
+        ///<return>Zwraca tablice gotowych danych do wysłania</return>
         public string[] Run()
         {
             if (a.L == null) a.L = new List<int>();
@@ -29,9 +33,9 @@ namespace serwer
                 Console.WriteLine(item.Key + " => " + item.Value);
             Console.WriteLine("-----------------");
 
+            //Zapisywanie poszczególnych pól w celu dalszego wykorzystania 
             if (map.ContainsKey("NS"))
             {
-
                 if (map.ContainsKey("OP"))
                     a.OP = map["OP"];
                 if (map.ContainsKey("IO"))
@@ -42,19 +46,22 @@ namespace serwer
                     a.L.Add(int.Parse(map["LL"]));
                 if (map["NS"].Equals("0"))
                 {
+                    //Jeśli ID w pakiecie jest inny niż obecnie obsługiwany wyślij informacje o błędzie 
                     if (!map["ID"].Equals(LID))
                     {
                         send.ID = map["ID"];
                         send.ST = "zajety";
                         var q = send.gen();
                         foreach (var s in q)
-                            Console.WriteLine("Serwer ...\n" + s + "\n-----------");
+                            Console.WriteLine("Serwer ...\n" + s + "-----------");
                         return q;
                     }
                     send.ID = LID;
                     a.ID = LID;
 
                     a.com = false;
+
+                    //analiza zebranych danych
                     _st();
                 }
             }
@@ -63,30 +70,33 @@ namespace serwer
             {
                 var q = send.gen();
                 foreach (var s in q)
-                    Console.WriteLine("Serwer ...\n" + s + "\n-----------");
+                    Console.WriteLine("Serwer ...\n" + s + "-----------");
                 a = new DB.zzzz();
                 return q;
             }
             return null;
         }
 
+        ///<summary>
+        ///Uruchamia poszczególne metody w zależności do żądania klienta
+        ///</summary>
         private void _st()
         {
             switch (a.ST)
             {
-                case "nowy":
+                case "nowy": //nowa sesja
                     newSession();
                     break;
-                case "operacja":
+                case "operacja": //liczenie
                     licz();
                     break;
-                case "id":
+                case "id": //historia danego ID klienta
                     _id();
                     break;
-                case "io":
+                case "io": //historia ID operacji
                     _io();
                     break;
-                case "koniec":
+                case "koniec": //zakończ sesję
                     endSession();
                     break;
                 default:
@@ -96,6 +106,9 @@ namespace serwer
             }
         }
 
+        ///<summary>
+        ///Przygotowywane historię klienta do wysłania
+        ///</summary>
         private void _id()
         {
             s = true;
@@ -120,6 +133,10 @@ namespace serwer
             }
             send.inne = tmp.ToArray();
         }
+
+        ///<summary>
+        ///Przygotowywane historię operacji do wysłania
+        ///</summary>
         private void _io()
         {
             s = true;
@@ -166,6 +183,9 @@ namespace serwer
                 send.ST = "nietwoje";
         }
 
+        ///<summary>
+        ///Wykonuje operacje zlecone przez klienta
+        ///</summary>
         private void licz()
         {
             send.ST = "wynik";
@@ -232,13 +252,19 @@ namespace serwer
             }
         }
 
-
+        ///<summary>
+        ///Zamykanie sesji
+        ///</summary>
         private void endSession()
         {
             LID = "";
             send.ST = "koniec";
             s = true;
         }
+
+        ///<summary>
+        ///Otwarcie nowej sesji
+        ///</summary>
         private void newSession()
         {
             LID = send.ID = db.newSession();

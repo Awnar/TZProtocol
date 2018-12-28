@@ -19,6 +19,9 @@ namespace klient
 
         private static string ID;
 
+        ///<summary>
+        ///Metoda inicjalizacja klienta. Wraz z główną pętlą oraz interfejsem.
+        ///</summary>
         static void Main(string[] args)
         {
             Console.WriteLine("Witaj!");
@@ -36,15 +39,18 @@ namespace klient
                 }
             }
 
+            //Nawiązanie połączenia i wysłanie pierwszego pakietu 
             serwer.Connect(DEFAULT_SERVER, DEFAULT_PORT);
 
             var kom = new Datagram.Datagram();
             kom.ST = "nowy";
             Send(kom);
 
+            //główna pętla
             bool running = true;
             while (running)
             {
+                //odebranie pakietu od serwera
                 var data = new List<Dictionary<string, string>>();
                 try
                 {
@@ -58,9 +64,10 @@ namespace klient
                     return;
                 }
 
+                //przygotowywanie odpowiedzi 
                 kom = new Datagram.Datagram {ID = ID};
 
-                // jakie ST
+                //interface
                 Console.WriteLine("\nCo chcesz zrobić?");
                 Console.WriteLine("1 - wykonanie operacji");
                 Console.WriteLine("2 - przeglądanie historii obliczeń przez moje ID");
@@ -221,11 +228,12 @@ namespace klient
                     kom.IO = Convert.ToString(io);
                 }
 
+                //Wysłanie pakietu
                 Send(kom);
             }
         }
 
-        private static List<Dictionary<string, string>> ReceiveLoop(byte i = 0)
+        private static List<Dictionary<string, string>> ReceiveLoop(byte k = 4, byte s = 0)
         {
             var data = new List<Dictionary<string, string>>();
             while (true)
@@ -239,10 +247,12 @@ namespace klient
                 }
                 catch (Exception)
                 {
-                    Console.WriteLine("Serwer nie odsyła odpowiedzi, próba: " + (i + 1));
-                    if (i++ < 4)
+                    Console.WriteLine("Serwer nie odsyła odpowiedzi, próba: " + (s + 1));
+                    if (s++ < k)
                     {
-                        return ReceiveLoop(i);
+                        var tmp = ReceiveLoop(s);
+                        data.AddRange(tmp);
+                        return data;
                     }
                     else
                     {
@@ -250,10 +260,13 @@ namespace klient
                     }
                 }
             }
-
             return data;
         }
 
+        ///<summary>
+        ///Metoda odbierająca pakiet, zwraca wyjątek gdy nie odbierze żadnego pakietu w przeciągu 4s.
+        ///</summary>>
+        ///<return>Zwraca zawartość odebranego pakietu</return>
         private static string Receive()
         {
             var timeToWait = TimeSpan.FromSeconds(4);
@@ -273,6 +286,9 @@ namespace klient
             throw new Exception();
         }
 
+        ///<summary>
+        ///Metoda wyświetlająca odpowiedz serwera
+        ///</summary>
         private static void odpS(List<Dictionary<string, string>> data)
         {
             switch (data[1]["ST"])
@@ -430,6 +446,9 @@ namespace klient
             }
         }
 
+        ///<summary>
+        ///Metoda wysyłająca pakiet
+        ///</summary>
         private static void Send(Datagram.Datagram fr)
         {
             var data = fr.gen();
@@ -440,6 +459,9 @@ namespace klient
             }
         }
 
+        ///<summary>
+        ///Metoda pozwalająca użytkownikowi samemu wprowadzić zawartość pakietu 
+        ///</summary>
         private static void edit()
         {
             Console.WriteLine("\nIle komunikatów chcesz wysłać?");

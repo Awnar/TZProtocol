@@ -17,22 +17,25 @@ namespace Datagram
 
         /* ZC -> znacznik czasu
          * ID -> generowane pseudolosowo z adresu nadawcy
-         * ST -> staus
+         * ST -> status
          *
          * NS -> numer sekcji jeśli > 1
          *
          * OP -> operacja
          * LL -> liczba
          *
-         * IO -> ID operacji (odsyla sserwer)
+         * IO -> ID operacji (odsyła serwer)
          *
          * 
          * 
          * OP, ST, NS, ID, ZC, LL, IO, ...
-         * 
         */
         private static string separator = "\n";
 
+        ///<summary>
+        ///Generuje pakiety które mają zostać wysłane
+        ///</summary>
+        ///<return>Tablica stringów zawierająca treść pakietów</return>
         public string[] gen()
         {
             k += LL.Count;
@@ -61,6 +64,11 @@ namespace Datagram
             return tmp;
         }
 
+        ///<summary>
+        ///Parsuje treśc pakietu na słownik
+        ///</summary>
+        ///<param "s">String zawierający treść pakietu przychodzącego</param>
+        ///<return>Słownik zawierający poszczególne pola z pakietu</return>
         public static Dictionary<string, string> analyze(string s)
         {
             var tmp = s.Split(separator.ToCharArray());
@@ -77,18 +85,27 @@ namespace Datagram
             return map;
         }
 
+        ///<summary>
+        ///Dostęp do pola operacji
+        ///</summary>
         public string OP
         {
             get => _OP;
             set => _OP = value;
         }
 
+        ///<summary>
+        ///Dostęp do pola statusu 
+        ///</summary>
         public string ST
         {
             get => _ST;
             set => _ST = value;
         }
 
+        ///<summary>
+        ///Dostęp do pola ID operacji
+        ///</summary>
         public string IO
         {
             get => _IO;

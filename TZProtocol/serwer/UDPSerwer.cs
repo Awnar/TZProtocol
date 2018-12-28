@@ -17,6 +17,9 @@ namespace serwer
 
         private UdpClient m_server = null;
 
+        ///<summary>
+        ///Inicjalizacja pętli serwerowej 
+        ///</summary>
         private void Init(IPEndPoint ipNport)
         {
             try
@@ -30,6 +33,9 @@ namespace serwer
             }
         }
 
+        ///<summary>
+        ///Konstruktor zaczynający iniclaizację serwera z domyślnymi ustawieniami
+        ///</summary>
         public UDPSerwer()
         {
             Init(DEFAULT_IP_END_POINT);
@@ -40,22 +46,31 @@ namespace serwer
             StopSerwer();
         }
 
+        ///<summary>
+        ///Zamknięcie soketu serwera
+        ///</summary>
         private void StopSerwer()
         {
             if (m_server != null)
                 m_server.Close();
         }
 
+        ///<summary>
+        ///Pętla serwerowa 
+        ///</summary>
         void loop()
         {
             IPEndPoint sender = new IPEndPoint(IPAddress.Any, 0);
             try
             {
+                //pętla odbierająca pakiety i przekazująca je do klasy analizującej
                 while (true)
                 {
                     var data = m_server.Receive(ref sender);
                     var processing = new Processing(data);
                     var tmp2 = processing.Run();
+
+                    //jeśli istnieje coś do wyslania robi to
                     if (tmp2 != null)
                         foreach (var item in tmp2)
                         {
@@ -67,6 +82,8 @@ namespace serwer
             catch (Exception)
             {
                 Console.WriteLine("BŁĄD... ponawianie nasłuchiwania");
+
+                //wysyłanie informacji o błędzie
                 var d = new Datagram.Datagram();
                 d.ST = "blad";
                 var da = d.gen();
@@ -76,6 +93,7 @@ namespace serwer
                     m_server.Send(tmp, tmp.Length, sender);
                 }
 
+                //wznawiania pętli w wypadku błędu
                 loop();
             }
         }
